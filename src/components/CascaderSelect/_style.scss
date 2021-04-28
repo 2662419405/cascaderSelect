@@ -1,33 +1,138 @@
+// 整体容器
+.cascader-select-main {
+  position: relative;
+  width: 300px;
+  min-width: 300px;
+  display: block;
+}
+
+// 下拉框外层元素样式
 .cascader-select-span {
-    position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  border: 1px solid #cccccc;
+  border-radius: 4px;
+  transition: all 0.1s;
+  padding-right: 8px;
+  .cascader-select-icon {
+    color: #999999;
+    display: block;
+    flex: 0 0 auto;
+    width: auto;
+    transition: all 0.3s;
+    transform-origin: center center;
   }
-  
-  // 默认下拉框样式
-  .cascader-select {
-    min-width: 200px;
+}
+
+// 原生组件下拉框样式
+.cascader-select {
+  display: block;
+  flex: 1 1 0;
+  overflow: hidden;
+  width: 100%;
+  cursor: pointer;
+  outline: none;
+  height: 30px;
+  line-height: 30px;
+  padding: 0 8px;
+  font-size: 14px;
+  border: none;
+  transition: all 0.1s;
+  border-radius: 4px;
+  &::placeholder {
+    color: #999999;
+  }
+}
+
+// 选中时icon样式
+.cascader-focus-icon {
+  transition: all 0.3s;
+  transform: rotate(180deg);
+}
+
+// 下拉框容器样式
+.cascader-select-container {
+  position: absolute;
+  top: 35px;
+  left: 0px;
+  min-width: 600px;
+  border: 1px solid #cccccc;
+  transition: all 0.1s;
+  border-radius: 4px;
+  padding: 10px;
+  z-index: 1000;
+  background-color: #ffffff;
+}
+
+// 弹窗样式
+.cascader-input-container {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  border: 1px solid #cccccc;
+  border-radius: 4px;
+  transition: all 0.1s;
+  padding: 4px 8px;
+  box-sizing: border-box;
+  .cascader-input-icon {
+    color: #999999;
+    display: block;
+    flex: 0 0 auto;
+    width: auto;
+    transition: all 0.3s;
+    transform-origin: center center;
+  }
+  // 搜索框的字体样式
+  .cascader-input-select {
+    display: block;
+    flex: 1 1 0;
+    overflow: hidden;
+    width: 100%;
     cursor: pointer;
     outline: none;
     height: 30px;
     line-height: 30px;
     padding: 0 8px;
     font-size: 14px;
-    border-radius: 4px;
-    border: 1px solid #cccccc;
+    border: none;
     transition: all 0.1s;
+    border-radius: 4px;
     &::placeholder {
       color: #999999;
     }
   }
-  
-  // 下拉框容器样式
-  .cascader-select-container{
-    position: absolute;
-    top: 35px;
-    left: 0px;
-    min-width: 600px;
-    border: 1px solid #cccccc;
-    transition: all 0.1s;
-    border-radius: 4px;
-    padding: 10px;
+}
+
+.cascader-focus-container {
+  overflow: hidden;
+  display: flex;
+  border-bottom: 1px solid #cccccc;
+  // 已被选择的字体样式
+  .cascader-focus-span {
+    font-weight: 600;
+    padding: 6px 0;
+    color: #006b00;
+    display: block;
+    border-bottom: 2px solid #006b00;
+    margin: 0 10px;
   }
-  
+}
+
+// 默认字体样式
+.cascader-default-span {
+  margin: 4px 10px;
+  display: inline-block;
+  font-weight: 500;
+  font-size: 14px;
+  cursor: pointer;
+  &:hover {
+    color: #5c5cf3;
+  }
+}
+
+.cascader-pointer {
+  cursor: pointer;
+}
