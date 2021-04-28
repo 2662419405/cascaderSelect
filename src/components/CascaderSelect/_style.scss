@@ -1,0 +1,33 @@
+.cascader-select-span {
+    position: relative;
+  }
+  
+  // 默认下拉框样式
+  .cascader-select {
+    min-width: 200px;
+    cursor: pointer;
+    outline: none;
+    height: 30px;
+    line-height: 30px;
+    padding: 0 8px;
+    font-size: 14px;
+    border-radius: 4px;
+    border: 1px solid #cccccc;
+    transition: all 0.1s;
+    &::placeholder {
+      color: #999999;
+    }
+  }
+  
+  // 下拉框容器样式
+  .cascader-select-container{
+    position: absolute;
+    top: 35px;
+    left: 0px;
+    min-width: 600px;
+    border: 1px solid #cccccc;
+    transition: all 0.1s;
+    border-radius: 4px;
+    padding: 10px;
+  }
+  
