@@ -57,8 +57,9 @@ const CascaderSelect: FC<ICascaderSelectProps> = props => {
    */
   const _getCascaderSelect = (selectValue: IDataSourceProps[]) => {
     let str = ''
-    selectValue?.forEach((item: IDataSourceProps) => {
-      str += item.name + '/'
+    selectValue?.forEach((item: IDataSourceProps, index: number) => {
+      str += item.name
+      index === selectValue.length - 1 || (str += ' / ')
     })
     setShowValue(str)
     props.getCascaderSelect && props.getCascaderSelect()

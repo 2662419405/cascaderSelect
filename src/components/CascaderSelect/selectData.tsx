@@ -2,6 +2,7 @@ import React, { FC, useState, useEffect } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import classNames from 'classnames'
 
+import { splitArr } from '../../utils'
 import { IDataSourceProps } from '../../hooks/useSelectData'
 
 interface ISelectDataProps {
@@ -33,9 +34,13 @@ const SelectData: FC<ISelectDataProps> = ({
 
   /**
    * 设置顶部数据源
-   * @param {number} index 单链数据层级
+   * @param {object} index 单链数据层级
    */
-  const _handlerChangeTopData = (index: number) => {
+  const _handlerChangeTopData = (item: IDataSourceProps) => {
+    if (item?.code?.length <= 6) {
+      _getLevelValue__(item.code)
+      _getSelectValue__(item.code)
+    }
     setFilterData([])
     setInputValue('')
   }
@@ -48,7 +53,7 @@ const SelectData: FC<ISelectDataProps> = ({
     setInputValue(e.target.value)
     // 过滤当前层级数据源
     let filterSelectData = levelData.filter((item: IDataSourceProps) => {
-      return item.name.indexOf(e.target.value) != -1
+      return item.name.indexOf(e.target.value) !== -1
     })
     setFilterData(filterSelectData || [])
   }
@@ -57,13 +62,54 @@ const SelectData: FC<ISelectDataProps> = ({
    * 通过code获取单链全部数据
    * @param code 地区Code
    */
-  const _getSelectValue__ = (code: string) => {}
+  const _getSelectValue__ = (code: string) => {
+    let codeList = splitArr(code)
+    let j = codeList.length // 循环结束条件
+    let i = 0
+    let selectCacheList: IDataSourceProps[] = []
+    if (j === 1) {
+      setSelectValue(selectCacheList)
+      return
+    }
+    let cacheList = dataSource
+    while (j > 0) {
+      cacheList?.forEach(item => {
+        if (item?.code?.slice(i * 2, i * 2 + 2).indexOf(codeList[i]) !== -1) {
+          cacheList = item.children
+          selectCacheList.push(item)
+        }
+      })
+      j--
+      i++
+    }
+    selectCacheList.pop()
+    setSelectValue(selectCacheList)
+  }
 
   /**
    * 通过code获取当前层级的数据
    * @param code 地区Code
    */
-  const _getLevelValue__ = (code: string) => {}
+  const _getLevelValue__ = (code: string) => {
+    let codeList = splitArr(code)
+    let j = codeList.length // 循环结束条件
+    let i = 0
+    if (j === 1) {
+      setLevelData(dataSource || [])
+      return
+    }
+    let cacheList = dataSource
+    while (j > 0) {
+      cacheList?.forEach(item => {
+        if (item?.code?.slice(i, i + 2).indexOf(codeList[i]) !== -1) {
+          cacheList = item.children
+        }
+      })
+      j--
+      i++
+    }
+    setLevelData(cacheList || [])
+  }
 
   // 显示的可选数据源
   let showData: IDataSourceProps[] = []
@@ -94,7 +140,7 @@ const SelectData: FC<ISelectDataProps> = ({
       <div>
         {/* 顶部联动 */}
         <div className={classNames('cascader-focus-container')}>
-          {(selectValue || []).map((item: IDataSourceProps, index: number) => {
+          {(selectValue || []).map((item: IDataSourceProps) => {
             return (
               <span
                 className={classNames([
@@ -103,7 +149,7 @@ const SelectData: FC<ISelectDataProps> = ({
                 ])}
                 key={item.code}
                 onClick={() => {
-                  _handlerChangeTopData(index)
+                  _handlerChangeTopData(item)
                 }}
               >
                 {item.name}

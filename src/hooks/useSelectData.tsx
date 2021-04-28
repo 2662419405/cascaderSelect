@@ -4,7 +4,7 @@ import Axios from 'axios'
 export interface IDataSourceProps {
   code: string
   name: string
-  children?: object
+  children?: IDataSourceProps[]
 }
 
 interface AxiosProps {
@@ -39,25 +39,9 @@ function useSelectData({ url }: AxiosProps) {
         ...item,
         value: item.code,
         label: item.name,
-        split: splitArr(item.code),
       }
     })
     return newData
-  }
-
-  /**
-   * 按照位数分割字符串
-   */
-  const splitArr = (str: string) => {
-    //先将str转换为数组
-    let result = []
-    while (str.length > 2) {
-      result.push(str.slice(0, 2))
-      str = str.slice(str.length - 2)
-      console.log(str)
-    }
-    console.log(result)
-    return result
   }
 
   useEffect(() => {
