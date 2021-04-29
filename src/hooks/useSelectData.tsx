@@ -10,9 +10,11 @@ export interface IDataSourceProps {
 interface AxiosProps {
   url: string
   method?: 'get' | 'post'
+  /** 改变变量,重新加载数据 */
+  getData?: boolean
 }
 
-function useSelectData({ url }: AxiosProps) {
+function useSelectData({ url, getData }: AxiosProps) {
   const [dataSource, setDataSource] = useState<IDataSourceProps[]>([])
   const [state, setState] = useState<string>('')
 
@@ -46,7 +48,7 @@ function useSelectData({ url }: AxiosProps) {
 
   useEffect(() => {
     search()
-  }, [])
+  }, [getData])
 
   return {
     dataSource,

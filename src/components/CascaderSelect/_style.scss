@@ -1,3 +1,12 @@
+@keyframes rotating {
+  from {
+    transform: rotate(0);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 // 整体容器
 .cascader-select-main {
   position: relative;
@@ -26,13 +35,33 @@
   }
 }
 
+// 加载中样式
+.cascader-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100px;
+  .cascader-loading-icon {
+    animation: rotating 1s ease-in-out infinite;
+  }
+}
+
+//焦点聚焦样式
+.cascader-select-focus-span {
+  border: 1px solid #5c5cf3;
+}
+
+// 禁用选择
+.cascader-select-disabled {
+  cursor: not-allowed;
+}
+
 // 原生组件下拉框样式
 .cascader-select {
   display: block;
   flex: 1 1 0;
   overflow: hidden;
   width: 100%;
-  cursor: pointer;
   outline: none;
   height: 30px;
   line-height: 30px;
@@ -64,6 +93,11 @@
   padding: 10px;
   z-index: 1000;
   background-color: #ffffff;
+  display: none;
+}
+
+.cascader-select-container-focus {
+  display: block;
 }
 
 // 弹窗样式
@@ -91,7 +125,6 @@
     flex: 1 1 0;
     overflow: hidden;
     width: 100%;
-    cursor: pointer;
     outline: none;
     height: 30px;
     line-height: 30px;

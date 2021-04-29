@@ -1,7 +1,7 @@
 /**
  * 按照位数分割字符串
  */
-const splitArr = (str: string, n = 2) => {
+ const splitArr = (str: string, n = 2) => {
   let result = []
   for (let i = 0, l = str.length; i < l / n; i++) {
     let _numberStr = str.slice(n * i, n * (i + 1))
@@ -14,4 +14,19 @@ const splitArr = (str: string, n = 2) => {
   return result
 }
 
-export { splitArr }
+/**
+ * 校验数据长度
+ */
+const checkValueLength = (str:string) =>{
+    if(str && (str.length === 2 ||
+      str.length === 4 ||
+      str.length === 6 ||
+      str.length === 8 ||
+      str.length === 9)){
+        return true
+    }else{
+      return false
+    }
+}
+
+export { splitArr, checkValueLength }

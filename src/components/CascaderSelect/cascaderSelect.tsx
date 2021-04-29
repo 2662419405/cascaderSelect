@@ -4,6 +4,7 @@ import React, {
   SelectHTMLAttributes,
   useState,
 } from 'react'
+import PropTypes from 'prop-types'
 // 第三方依赖包
 import classNames from 'classnames'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -18,29 +19,52 @@ interface ISelectProps {
   disabled?: boolean
   /** 默认值 */
   defaultValue?: string
-  onChange: Function
-  // 获取选中层级的全部数据
+  /** 搜索提示信息 */
+  searchplaceholder?: string
+  /** 受控值 */
+  value?: string
+  /** 请求api数据接口 */
+  apiUrl?: string
+  /** 清空选择框 */
+  hasClear?: boolean
+  /** 获取全部数据 */
+  getAllData?: Function
+  /** 获取选中层级的全部数据 */
   getCascaderLevel?: Function
-  // 获取链式全部数据
+  /** 获取链式全部数据 */
   getCascaderSelect?: Function
-}
-
-interface IState {
-  dataSource: any
+  /** 重新请求接口触发 */
+  setRefreshData?: Function
 }
 
 type InputProps = ISelectProps & InputHTMLAttributes<HTMLElement>
 type SelectProps = ISelectProps & SelectHTMLAttributes<HTMLElement>
 export type ICascaderSelectProps = Partial<InputProps & SelectProps>
 
-let apiUrl =
-  'https://raw.githubusercontent.com/modood/Administrative-divisions-of-China/master/dist/pcas-code.json'
-
 const CascaderSelect: FC<ICascaderSelectProps> = props => {
+  const {
+    disabled,
+    defaultValue,
+    placeholder,
+    className,
+    value,
+    searchplaceholder,
+    setRefreshData,
+    getCascaderLevel,
+    getCascaderSelect,
+    apiUrl,
+    getAllData,
+    hasClear,
+    ...otherProps
+  } = props
+
   const [focus, setFocus] = useState<boolean>(false)
+  const [getData, setGetData] = useState<boolean>(false)
+  const [enterChild, setEnterChild] = useState<boolean>(false)
   const [showValue, setShowValue] = useState<string>('')
   const { dataSource, state } = useSelectData({
-    url: apiUrl,
+    url: apiUrl || '',
+    getData,
   })
 
   /**
@@ -62,22 +86,34 @@ const CascaderSelect: FC<ICascaderSelectProps> = props => {
       index === selectValue.length - 1 || (str += ' / ')
     })
     setShowValue(str)
-    props.getCascaderSelect && props.getCascaderSelect()
+    getCascaderSelect && getCascaderSelect(selectValue || [])
   }
 
-  const {
-    disabled,
-    defaultValue,
-    placeholder,
-    onChange,
+  /**
+   * 重新加载数据请求
+   */
+  const refechData = () => {
+    if (state === 'error') {
+      setGetData(!getData)
+      setRefreshData && setRefreshData()
+    }
+  }
+
+  const classes = classNames(
+    'cascader-select',
     className,
-    ...otherProps
-  } = props
-  const classes = classNames('cascader-select', className)
+    disabled && `cascader-select-disabled`
+  )
 
   return (
     <span className={classNames('cascader-select-main')}>
-      <span className={classNames('cascader-select-span')}>
+      <span
+        className={classNames([
+          'cascader-select-span',
+          disabled && `cascader-select-disabled`,
+          (focus || enterChild) && 'cascader-select-focus-span',
+        ])}
+      >
         <input
           placeholder={placeholder}
           disabled={disabled}
@@ -93,25 +129,63 @@ const CascaderSelect: FC<ICascaderSelectProps> = props => {
           icon="chevron-down"
           className={classNames([
             'cascader-select-icon',
-            focus && 'cascader-focus-icon',
+            (focus || enterChild) && 'cascader-focus-icon',
           ])}
         />
       </span>
       {/* 数据展示框 */}
-      <div className={classNames('cascader-select-container')}>
+      <div
+        className={classNames([
+          'cascader-select-container',
+          (focus || enterChild) && 'cascader-select-container-focus',
+        ])}
+        onMouseEnter={() => {
+          setEnterChild(true)
+        }}
+        onMouseLeave={() => {
+          setEnterChild(false)
+        }}
+      >
         <Select
+          placeholder={placeholder}
+          searchplaceholder={searchplaceholder}
           dataSource={dataSource}
-          getCascaderLevel={props.getCascaderLevel}
+          defaultValue={defaultValue}
+          value={value}
+          state={state}
+          getCascaderLevel={getCascaderLevel}
+          getAllData={getAllData}
           getCascaderSelect={_getCascaderSelect}
+          refechData={refechData}
         />
       </div>
     </span>
   )
 }
 
+/** 默认值 */
 CascaderSelect.defaultProps = {
-  onChange: () => {},
+  getAllData: () => {},
+  getCascaderLevel: () => {},
+  getCascaderSelect: () => {},
+  setRefreshData: () => {},
   placeholder: '请选择行政区域',
+  searchplaceholder: '请搜索行政区域',
+  apiUrl:
+    'https://raw.githubusercontent.com/modood/Administrative-divisions-of-China/master/dist/pcas-code.json',
+}
+
+/** 数据类型 */
+CascaderSelect.propTypes = {
+  getAllData: PropTypes.func,
+  getCascaderLevel: PropTypes.func,
+  getCascaderSelect: PropTypes.func,
+  setRefreshData: PropTypes.func,
+  value: PropTypes.string,
+  disabled: PropTypes.bool,
+  placeholder: PropTypes.string,
+  searchplaceholder: PropTypes.string,
+  apiUrl: PropTypes.string,
 }
 
 export default CascaderSelect
